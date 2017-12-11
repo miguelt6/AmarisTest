@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Amaris.Models.Developer>
+
+@{
+    ViewBag.Title = "Developer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Developers</h2>
+@if (!Model.Any())
+{
+    <p>We don't have any developers yet.</p>
+}
+else
+{
+    <table id="developers" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Developer</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var developer in Model)
+            {
+                <tr>
+                    <td>@Html.ActionLink(developer.FirstName + " " + developer.LastName, "Edit", "Developers", new { id = developer.Id }, null)</td>
+                    <td>
+                        <button data-developer-id="@developer.Id" class="btn btn-link js-delete">Delete</button>
+                    </td>
+                </tr>
+              }
+        </tbody>
+    </table>
+   
+}
+<input type="button" value="Create" onclick="location.href='@Url.Action("New", "Developers")'" />
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#developers").on("click", ".js-delete", function () {
+                var button = $(this);
+                if (confirm("Delete this developer?")) {
+                    $.ajax({
+                        url: "/api/developers/" + button.attr("data-developer-id"),
+                        method: "DELETE",
+                        success: function () {
+                            button.parents("tr").remove();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

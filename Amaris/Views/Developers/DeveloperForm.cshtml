@@ -1,0 +1,125 @@
+﻿@model Amaris.Models.Developer
+
+@{
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Developer</h2>
+
+@using (Html.BeginForm("Save", "Developers"))
+{
+    @Html.ValidationSummary(true, "Please fix the following errors.")
+    @Html.ValidationMessageFor(m => m.WebTechnologies);
+    <br />
+    @Html.ValidationMessageFor(m => m.Stacks);
+    <div class="form-group">
+        @Html.LabelFor(m => m.FirstName)
+        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.FirstName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.LastName)
+        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.LastName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Address)
+        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Address)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Phone)
+        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Phone)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Dob)
+        @Html.TextBoxFor(m => m.Dob, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Dob)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.YearsOfExperience)
+        @Html.TextBoxFor(m => m.YearsOfExperience, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.YearsOfExperience)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Comments)
+        @Html.TextBoxFor(m => m.Comments, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Comments)
+    </div>
+    <label>Stack</label>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <table>
+                <tr>
+                    @{
+                        int cnt = 0;
+                        List<Amaris.ViewModels.AssignedStacksToDeveloper> stacks = ViewBag.Stacks;
+
+                        foreach (var stack in stacks)
+                        {
+                            if (cnt++ % 3 == 0)
+                            {
+                                @:</tr> <tr>
+                            }
+                            @:<td>
+                                <input type="checkbox"
+                                       name="selectedstacks"
+                                       value="@stack.StackId"
+                                       @(Html.Raw(stack.Assigned ? "checked=\"checked\"" : "")) />
+                                @stack.StackId @:  @stack.Name
+                                @:</td>
+                    }
+                        @:</tr>
+                    }
+                </table>
+            </div>
+        </div>
+        <label>Web Technologies</label>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <table>
+                    <tr>
+                        @{
+                            int cnt2 = 0;
+                            List<Amaris.ViewModels.AssignedWebTechsToDeveloper> techs = ViewBag.Techs;
+
+                            foreach (var tech in techs)
+                            {
+                                if (cnt2++ % 3 == 0)
+                                {
+                                    @:</tr> <tr>
+                            }
+                                @:<td>
+                                    <input type="checkbox"
+                                           name="selectedtechs"
+                                           value="@tech.WebTechId"
+                                           @(Html.Raw(tech.Assigned ? "checked=\"checked\"" : "")) />
+                                    @tech.WebTechId @:  @tech.Name
+                                    @:</td>
+                    }
+                            @:</tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+
+
+    @Html.HiddenFor(m => m.Id)
+    @Html.AntiForgeryToken()
+    
+    <button type="submit" class="btn btn-primary">Save</button>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+   
+}

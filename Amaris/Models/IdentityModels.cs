@@ -20,14 +20,42 @@ namespace Amaris.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<Developer> Developers { get; set; }
+        public DbSet<WebTechnology> WebTechnologies { get; set; }
+        public DbSet<Stack> Stacks { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer(new DBInitializer());
         }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Developer>()
+                .HasMany(d => d.WebTechnologies)
+                .WithMany(w => w.Developers)
+                .Map(m=> 
+                {
+                    m.MapLeftKey("DeveloperId");
+                    m.MapRightKey("WebTechnologyId");
+                    m.ToTable("DevelopersWebTechnologies");
+                });
+
+            modelBuilder.Entity<Developer>()
+                .HasMany(d => d.Stacks)
+                .WithMany(s => s.Developers)
+                .Map(m=> {
+                    m.MapLeftKey("DeveloperId");
+                    m.MapRightKey("StackId");
+                    m.ToTable("DevelopersStacks");
+                });
         }
     }
 }
